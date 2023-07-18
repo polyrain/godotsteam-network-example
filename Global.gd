@@ -39,15 +39,14 @@ func start_game():
 	if STEAM_ID == HOST_ID:
 		SERVER = true
 		in_session = true
-		get_tree().change_scene("res://World.tscn")
 		var packet = {'type': 'start_game', 'game_started': true}
 		Networking.send_p2p_message('', packet)
-		spawn_players()
 	else:
 		in_session = true
 		SERVER = false
-		get_tree().change_scene("res://World.tscn")
-		spawn_players()
+		
+	get_tree().change_scene("res://World.tscn")
+	spawn_players()
 
 func spawn_players():
 	print(LOBBY_MEMBERS)
