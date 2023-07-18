@@ -10,8 +10,18 @@ onready var sprite = $Sprite
  
 var y_velo = 0
 var facing_right = false
+
+# Determines if this instance of a player is "real" or not
+var is_puppet: bool = false
+# Default the steam_id of this player to be the hosts
+var steam_id: int = Global.STEAM_ID 
+
+func _ready():
+	Networking.connect("movement", self, "_on_Movement_Update")
  
 func _physics_process(delta):
+	if is_puppet:
+		return
 	var move_dir = 0
 	if Input.is_action_pressed("move_right"):
 		move_dir += 1
@@ -58,3 +68,15 @@ func _on_PacketTimeout_timeout():
 	player_pos_data['y_pos'] = position.y
 	player_pos_data['player'] = Global.STEAM_ID
 	Networking.send_p2p_message('', player_pos_data)
+	
+# Responds to movement messages being received, check if this is for this player
+# and apply
+func _on_Movement_Update(payload):
+	if payload['player'] != steam_id:
+		return
+	if not 'x_pos' in payload or not 'y_pos' in payload:
+		print('Invalid movement message!')
+		return 
+	position.x = payload['x_pos']
+	position.y = payload['y_pos']
+

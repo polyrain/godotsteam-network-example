@@ -242,7 +242,7 @@ func _on_Leave_Lobby_pressed() -> void:
 
 # Start the game
 func _on_Start_Pressed() -> void:
-	Global.start_game()
+	Global._on_Start_Game({})
 
 
 #################################################

@@ -1,5 +1,5 @@
 extends Node
-onready var PLAYER = preload("res://NetworkPlayer.tscn")
+onready var PLAYER = preload("res://Player.tscn")
 const PACKET_READ_LIMIT: int = 32
 var STEAM_ID: int = 0
 var HOST_ID: int = 0
@@ -18,6 +18,7 @@ var in_session: bool = false # Are we playing a game?
 
 func _ready() -> void:
 	_initialize_Steam()
+	Networking.connect("start_game", self, "_on_Start_Game")
 	
 
 func _initialize_Steam() -> void:
@@ -34,14 +35,18 @@ func _process(_delta: float) -> void:
 	Steam.run_callbacks()
 	if LOBBY_ID > 0:
 		Networking.read_p2p_messages()
-		
-func start_game():
+
+func _on_Start_Game(payload):
+	# Hosts don't need to parse anything, they started the session
 	if STEAM_ID == HOST_ID:
 		SERVER = true
 		in_session = true
 		var packet = {'type': 'start_game', 'game_started': true}
 		Networking.send_p2p_message('', packet)
 	else:
+		if not payload['game_started']:
+			print("Malformed start message")
+			return
 		in_session = true
 		SERVER = false
 		
@@ -57,6 +62,7 @@ func spawn_players():
 		print('Instanced player')
 		LOBBY_MEMBERS[MEMBER]['ply_obj'] = fake_player
 		fake_player.steam_id = MEMBER
+		fake_player.is_puppet = true
 		
 		
 """
