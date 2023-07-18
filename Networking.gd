@@ -30,9 +30,9 @@ func send_p2p_message(target, data):
 func read_p2p_messages():
 	var msgs = Steam.receiveMessagesOnChannel(0, 16)
 	for msg in msgs:
-		print("[DEBUG] Raw Steam msg %s" % msg)
+		#print("[DEBUG] Raw Steam msg %s" % msg)
 		var decoded_msg = bytes2var(msg['payload'])
-		print("[DEBUG] Decoded Steam msg %s" % decoded_msg)
+		#print("[DEBUG] Decoded Steam msg %s" % decoded_msg)
 		if 'type' in decoded_msg and signal_mappings.get(decoded_msg['type'], false):
 			funcref(self, signal_mappings[ decoded_msg['type'] ]).call_func(decoded_msg)
 
