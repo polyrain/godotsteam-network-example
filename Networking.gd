@@ -1,14 +1,13 @@
 extends Node
 
 # Define signals for your different kinds of messages here
-signal move_message(x_position, y_position, player)
+signal move_message(payload)
 signal die_message(player)
 
 # Mapping of message 'type' to signal to emit
 var signal_mappings: Dictionary = {}
 
 func _init():
-	register_callback('movement', 'movement_message_handler')
 	register_callback('die', 'die_message_handler')
 	register_callback('start_game', 'start_message_handler')
 
@@ -35,6 +34,8 @@ func read_p2p_messages():
 		#print("[DEBUG] Decoded Steam msg %s" % decoded_msg)
 		if 'type' in decoded_msg and signal_mappings.get(decoded_msg['type'], false):
 			funcref(self, signal_mappings[ decoded_msg['type'] ]).call_func(decoded_msg)
+			# Alternatively, you could emit a signal with the same name as the type and let subscribers parse it
+			emit_signal(decoded_msg['type'], decoded_msg)
 
 
 # Put these in the map
