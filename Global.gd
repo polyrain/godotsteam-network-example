@@ -12,8 +12,9 @@ var LOBBY_MAX_MEMBERS: int = 10
 enum LOBBY_AVAILABILITY {PRIVATE, FRIENDS, PUBLIC, INVISIBLE}
 var IS_ONLINE
 var IS_OWNED
+
 var SERVER: bool = false # Are we the host?
-var in_session: bool = false
+var in_session: bool = false # Are we playing a game?
 
 func _ready() -> void:
 	_initialize_Steam()
@@ -45,6 +46,8 @@ func start_game():
 	else:
 		in_session = true
 		SERVER = false
+		get_tree().change_scene("res://World.tscn")
+		spawn_players()
 
 func spawn_players():
 	print(LOBBY_MEMBERS)
