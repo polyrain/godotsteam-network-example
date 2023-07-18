@@ -41,6 +41,7 @@ func start_game():
 		get_tree().change_scene("res://World.tscn")
 		var packet = {'type': 'start_game', 'game_started': true}
 		Networking.send_p2p_message('', packet)
+		spawn_players()
 	else:
 		in_session = true
 		SERVER = false
