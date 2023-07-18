@@ -12,7 +12,7 @@ func _init():
 	register_callback('die', 'die_message_handler')
 	register_callback('start_game', 'start_message_handler')
 
-# Send a msg to a user
+# Send a msg to a user. Specify the intended target by passing in their Identity reference name
 func send_p2p_message(target, data):
 	var PACKET_DATA: PoolByteArray = []
 	PACKET_DATA.append_array(var2bytes(data))
@@ -47,7 +47,7 @@ func movement_message_handler(payload: Dictionary):
 		print('Invalid movement message!')
 		return 
 	
-	emit_signal("move_message", payload.x_position, payload.y_position, payload.player)
+	emit_signal("move_message", payload.x_pos, payload.y_pos, payload.player)
 	
 func die_message_handler(payload: Dictionary):
 	if not 'player' in payload:
