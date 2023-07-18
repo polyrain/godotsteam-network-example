@@ -20,7 +20,7 @@ func send_p2p_message(target, data):
 		for identity in Steam.getIdentities():
 			if Steam.isIdentityInvalid(identity['reference_name']):
 				continue
-			if identity['reference_name'] != str(Global.STEAM_ID) and not (Global.SERVER and identity['reference_name'] == 'host'): # Don't send to ourselves
+			if identity['reference_name'] != "steamid:"+str(Global.STEAM_ID) and not (Global.SERVER and identity['reference_name'] == 'host'): # Don't send to ourselves
 				if not Steam.sendMessageToUser(identity['reference_name'], PACKET_DATA, 8, 0) == Steam.RESULT_OK:
 					print("Failed to send a packet!")
 	else:

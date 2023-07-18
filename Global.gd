@@ -58,8 +58,6 @@ func spawn_players():
 		LOBBY_MEMBERS[MEMBER]['ply_obj'] = fake_player
 		fake_player.steam_id = MEMBER
 		
-	
-		
 		
 """
 Instance a node at a specific global position. Used to spawn players.
