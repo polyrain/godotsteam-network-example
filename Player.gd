@@ -16,11 +16,23 @@ var is_puppet: bool = false
 # Default the steam_id of this player to be the hosts
 var steam_id: int = Global.STEAM_ID 
 
+# Where we WANT to move to if we're a puppet
+var target_x: float = 0.0
+var target_y: float = 0.0
+var lerp_time = 0
+var duration = 0.1  # We expect a new packet every 100ms
+
 func _ready():
 	Networking.connect("movement", self, "_on_Movement_Update")
  
 func _physics_process(delta):
 	if is_puppet:
+		if lerp_time < duration:
+			lerp_time += delta
+			position.x = lerp(position.x, target_x, lerp_time / duration)
+			position.y = lerp(position.y, target_y, lerp_time / duration)
+		else:
+			lerp_time = 0 # Reset the lerp timer since new packet is in
 		return
 	var move_dir = 0
 	if Input.is_action_pressed("move_right"):
@@ -74,9 +86,11 @@ func _on_PacketTimeout_timeout():
 func _on_Movement_Update(payload):
 	if payload['player'] != steam_id:
 		return
-	if not 'x_pos' in payload or not 'y_pos' in payload:
+	if not 'x_pos' in payload or not 'y_pos' in payload or not 'vel' in payload:
 		print('Invalid movement message!')
 		return 
-	position.x = payload['x_pos']
-	position.y = payload['y_pos']
-
+	
+	target_x = payload['x_pos']
+	target_y = payload['y_pos']
+	
+		
